@@ -1,0 +1,554 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Portal Alumni</title>
+
+  <!-- Fonts -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@400;600;700;800&family=Sora:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+
+  <!-- Icons (Lucide via CDN) -->
+  <script src="https://unpkg.com/lucide@latest/dist/umd/lucide.min.js"></script>
+
+  <!-- App CSS -->
+  <link rel="stylesheet" href="assets/style.css">
+</head>
+<body>
+
+  <!-- ═══════════════════════════════════════════════
+       PAGE: LOGIN
+  ════════════════════════════════════════════════ -->
+  <div id="page-login" class="page active">
+
+    <!-- Decorative background elements -->
+    <div class="bg-grid"></div>
+    <div class="orb orb-1"></div>
+    <div class="orb orb-2"></div>
+    <div class="orb orb-3"></div>
+
+    <!-- Left panel — branding -->
+    <div class="login-left">
+      <div class="brand-badge">
+        <span class="badge-dot"></span>
+        Portal Resmi Alumni
+      </div>
+
+      <h1 class="login-headline">
+        Jalin Koneksi,<br>
+        <em>Bangun Masa Depan</em>
+      </h1>
+
+      <p class="login-desc">
+        Satu platform untuk seluruh alumni. Update profil, terhubung dengan sesama,
+        dan tampilkan perjalanan karier Anda kepada dunia.
+      </p>
+
+      <div class="login-stats">
+        <div class="stat-item">
+          <span class="stat-num" id="stat-total">142K+</span>
+          <span class="stat-label">Alumni Terdaftar</span>
+        </div>
+        <div class="stat-divider"></div>
+        <div class="stat-item">
+          <span class="stat-num">10+</span>
+          <span class="stat-label">Fakultas</span>
+        </div>
+        <div class="stat-divider"></div>
+        <div class="stat-item">
+          <span class="stat-num">25</span>
+          <span class="stat-label">Tahun Angkatan</span>
+        </div>
+      </div>
+
+      <!-- Floating cards decoration -->
+      <div class="deco-cards">
+        <div class="deco-card deco-card-1">
+          <i data-lucide="linkedin" class="deco-icon"></i>
+          <span>LinkedIn</span>
+        </div>
+        <div class="deco-card deco-card-2">
+          <i data-lucide="instagram" class="deco-icon"></i>
+          <span>Instagram</span>
+        </div>
+        <div class="deco-card deco-card-3">
+          <i data-lucide="briefcase" class="deco-icon"></i>
+          <span>Karier</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- Right panel — login form -->
+    <div class="login-right">
+      <div class="login-card">
+
+        <!-- Logo -->
+        <div class="login-logo">
+          <div class="logo-icon">
+            <i data-lucide="graduation-cap"></i>
+          </div>
+          <div class="logo-text">
+            <span class="logo-name">Alumni Portal</span>
+            <span class="logo-sub">Universitas</span>
+          </div>
+        </div>
+
+        <h2 class="login-title">Selamat Datang</h2>
+        <p class="login-subtitle">Masuk menggunakan Nama &amp; NIM Anda</p>
+
+        <!-- Form -->
+        <div class="login-form">
+          <div class="field-group">
+            <label class="field-label" for="input-nama">Nama Lengkap</label>
+            <div class="field-wrap">
+              <i data-lucide="user" class="field-icon"></i>
+              <input
+                type="text" id="input-nama"
+                placeholder="Masukkan nama lengkap Anda"
+                autocomplete="name"
+              />
+            </div>
+          </div>
+
+          <div class="field-group">
+            <label class="field-label" for="input-nim">NIM</label>
+            <div class="field-wrap">
+              <i data-lucide="id-card" class="field-icon"></i>
+              <input
+                type="text" id="input-nim"
+                placeholder="Masukkan NIM Anda"
+                autocomplete="off"
+              />
+            </div>
+          </div>
+
+          <div id="login-error" class="error-box" aria-live="polite">
+            <i data-lucide="alert-circle"></i>
+            <span id="login-error-msg">Nama atau NIM tidak ditemukan.</span>
+          </div>
+
+          <button id="btn-login" class="btn-primary btn-full">
+            <span class="btn-text">Masuk ke Dashboard</span>
+            <i data-lucide="arrow-right"></i>
+            <span class="btn-loader" aria-hidden="true"></span>
+          </button>
+        </div>
+
+        <div class="login-note">
+          <i data-lucide="info"></i>
+          Gunakan nama persis sesuai data ijazah dan NIM yang terdaftar.
+        </div>
+
+        <!-- Supabase config (shown if not configured) -->
+        <div id="supabase-notice" class="config-notice">
+          <i data-lucide="database"></i>
+          <div>
+            <strong>Konfigurasi Supabase diperlukan.</strong>
+            Buka <code>assets/config.js</code> dan isi
+            <code>SUPABASE_URL</code> &amp; <code>SUPABASE_ANON_KEY</code>.
+          </div>
+        </div>
+
+      </div>
+    </div>
+  </div>
+
+
+  <!-- ═══════════════════════════════════════════════
+       PAGE: DASHBOARD
+  ════════════════════════════════════════════════ -->
+  <div id="page-dashboard" class="page">
+
+    <!-- TOP NAVIGATION -->
+    <nav class="topnav">
+      <div class="nav-brand">
+        <div class="nav-logo">
+          <i data-lucide="graduation-cap"></i>
+        </div>
+        <span class="nav-title">Alumni Portal</span>
+      </div>
+
+      <div class="nav-center">
+        <span id="nav-welcome" class="nav-welcome"></span>
+      </div>
+
+      <div class="nav-actions">
+        <div class="nav-avatar" id="nav-avatar-btn">
+          <div class="avatar-ring" id="nav-avatar-ring">
+            <span id="nav-avatar-initial">A</span>
+          </div>
+          <span id="nav-avatar-name" class="avatar-name-text"></span>
+          <i data-lucide="chevron-down" class="avatar-caret"></i>
+        </div>
+        <button id="btn-logout" class="btn-ghost">
+          <i data-lucide="log-out"></i>
+          Keluar
+        </button>
+      </div>
+    </nav>
+
+    <!-- MAIN CONTENT -->
+    <main class="dash-main">
+
+      <!-- PROFILE HERO -->
+      <section class="profile-hero">
+        <div class="hero-avatar">
+          <div class="hero-avatar-ring" id="hero-avatar-ring">
+            <span id="hero-avatar-initial">A</span>
+          </div>
+          <div class="hero-avatar-status"></div>
+        </div>
+
+        <div class="hero-info">
+          <div class="hero-greeting">Halo, selamat datang 👋</div>
+          <h2 class="hero-name" id="hero-name">-</h2>
+          <div class="hero-tags">
+            <span class="hero-tag" id="hero-tag-nim">
+              <i data-lucide="hash"></i>
+              <span id="hero-nim-val">-</span>
+            </span>
+            <span class="hero-tag" id="hero-tag-fak">
+              <i data-lucide="building-2"></i>
+              <span id="hero-fak-val">-</span>
+            </span>
+            <span class="hero-tag" id="hero-tag-prodi">
+              <i data-lucide="book-open"></i>
+              <span id="hero-prodi-val">-</span>
+            </span>
+            <span class="hero-tag hero-tag-lulus" id="hero-tag-lulus">
+              <i data-lucide="calendar-check"></i>
+              <span id="hero-lulus-val">-</span>
+            </span>
+          </div>
+        </div>
+
+        <!-- Profile completion ring -->
+        <div class="hero-completion">
+          <svg class="completion-svg" width="80" height="80" viewBox="0 0 80 80">
+            <circle class="ring-track" cx="40" cy="40" r="33"/>
+            <circle class="ring-fill" id="ring-fill" cx="40" cy="40" r="33"
+              stroke-dasharray="207.3" stroke-dashoffset="207.3"/>
+          </svg>
+          <div class="completion-pct" id="completion-pct">0%</div>
+          <div class="completion-lbl">Profil Lengkap</div>
+        </div>
+      </section>
+
+      <!-- SAVE STATUS BAR -->
+      <div id="save-status" class="save-status" aria-live="polite"></div>
+
+      <!-- ───────────────────────────────────────────
+           SECTION 1: SOSIAL MEDIA PRIBADI
+      ─────────────────────────────────────────── -->
+      <section class="dash-section">
+        <div class="section-header">
+          <div class="section-title">
+            <span class="section-dot"></span>
+            Sosial Media Pribadi
+          </div>
+          <span class="section-badge">Preview tersedia</span>
+        </div>
+
+        <div class="social-grid">
+
+          <!-- LinkedIn -->
+          <div class="social-card" data-platform="linkedin">
+            <div class="social-card-header">
+              <div class="social-icon social-icon-linkedin">
+                <i data-lucide="linkedin"></i>
+              </div>
+              <div>
+                <div class="social-name">LinkedIn</div>
+                <div class="social-type">Profesional Network</div>
+              </div>
+              <div class="social-preview-btn" id="preview-linkedin-btn" title="Preview Profile">
+                <i data-lucide="eye"></i>
+              </div>
+            </div>
+            <div class="field-wrap social-field-wrap">
+              <span class="social-prefix">linkedin.com/in/</span>
+              <input type="text" id="social-linkedin" class="social-input"
+                placeholder="username-anda"
+                data-field="linkedin_username"/>
+            </div>
+            <div class="social-preview-panel" id="preview-linkedin"></div>
+          </div>
+
+          <!-- Instagram -->
+          <div class="social-card" data-platform="instagram">
+            <div class="social-card-header">
+              <div class="social-icon social-icon-instagram">
+                <i data-lucide="instagram"></i>
+              </div>
+              <div>
+                <div class="social-name">Instagram</div>
+                <div class="social-type">Photo &amp; Video</div>
+              </div>
+              <div class="social-preview-btn" id="preview-instagram-btn" title="Preview Profile">
+                <i data-lucide="eye"></i>
+              </div>
+            </div>
+            <div class="field-wrap social-field-wrap">
+              <span class="social-prefix">@</span>
+              <input type="text" id="social-instagram" class="social-input"
+                placeholder="username_anda"
+                data-field="instagram_username"/>
+            </div>
+            <div class="social-preview-panel" id="preview-instagram"></div>
+          </div>
+
+          <!-- Facebook -->
+          <div class="social-card" data-platform="facebook">
+            <div class="social-card-header">
+              <div class="social-icon social-icon-facebook">
+                <i data-lucide="facebook"></i>
+              </div>
+              <div>
+                <div class="social-name">Facebook</div>
+                <div class="social-type">Social Network</div>
+              </div>
+              <div class="social-preview-btn" id="preview-facebook-btn" title="Preview Profile">
+                <i data-lucide="eye"></i>
+              </div>
+            </div>
+            <div class="field-wrap social-field-wrap">
+              <span class="social-prefix">facebook.com/</span>
+              <input type="text" id="social-facebook" class="social-input"
+                placeholder="nama.anda"
+                data-field="facebook_username"/>
+            </div>
+            <div class="social-preview-panel" id="preview-facebook"></div>
+          </div>
+
+          <!-- TikTok -->
+          <div class="social-card" data-platform="tiktok">
+            <div class="social-card-header">
+              <div class="social-icon social-icon-tiktok">
+                <svg viewBox="0 0 24 24" fill="currentColor" width="18" height="18">
+                  <path d="M19.59 6.69a4.83 4.83 0 0 1-3.77-4.25V2h-3.45v13.67a2.89 2.89 0 0 1-2.88 2.5 2.89 2.89 0 0 1-2.89-2.89 2.89 2.89 0 0 1 2.89-2.89c.28 0 .54.04.79.1V9.01a6.33 6.33 0 0 0-.79-.05 6.34 6.34 0 0 0-6.34 6.34 6.34 6.34 0 0 0 6.34 6.34 6.34 6.34 0 0 0 6.34-6.34V8.69a8.26 8.26 0 0 0 4.83 1.55V6.8a4.85 4.85 0 0 1-1.07-.11z"/>
+                </svg>
+              </div>
+              <div>
+                <div class="social-name">TikTok</div>
+                <div class="social-type">Short Video</div>
+              </div>
+              <div class="social-preview-btn" id="preview-tiktok-btn" title="Preview Profile">
+                <i data-lucide="eye"></i>
+              </div>
+            </div>
+            <div class="field-wrap social-field-wrap">
+              <span class="social-prefix">@</span>
+              <input type="text" id="social-tiktok" class="social-input"
+                placeholder="username_anda"
+                data-field="tiktok_username"/>
+            </div>
+            <div class="social-preview-panel" id="preview-tiktok"></div>
+          </div>
+
+        </div><!-- /social-grid -->
+      </section>
+
+      <!-- ───────────────────────────────────────────
+           SECTION 2: KONTAK PRIBADI
+      ─────────────────────────────────────────── -->
+      <section class="dash-section">
+        <div class="section-header">
+          <div class="section-title">
+            <span class="section-dot"></span>
+            Kontak Pribadi
+          </div>
+        </div>
+
+        <div class="fields-grid col-2">
+
+          <div class="field-card">
+            <label class="field-label">
+              <i data-lucide="mail"></i>
+              Email
+            </label>
+            <input type="email" id="field-email" placeholder="nama@email.com" data-field="email"/>
+          </div>
+
+          <div class="field-card">
+            <label class="field-label">
+              <i data-lucide="phone"></i>
+              No. HP / WhatsApp
+            </label>
+            <div class="field-wrap phone-wrap">
+              <span class="phone-prefix">+62</span>
+              <input type="tel" id="field-phone" class="phone-input"
+                placeholder="812-3456-7890" data-field="phone"/>
+            </div>
+          </div>
+
+        </div>
+      </section>
+
+      <!-- ───────────────────────────────────────────
+           SECTION 3: DATA PEKERJAAN
+      ─────────────────────────────────────────── -->
+      <section class="dash-section">
+        <div class="section-header">
+          <div class="section-title">
+            <span class="section-dot"></span>
+            Informasi Pekerjaan
+          </div>
+        </div>
+
+        <!-- Status kerja radio -->
+        <div class="field-card field-card-wide mb-20">
+          <label class="field-label">
+            <i data-lucide="briefcase"></i>
+            Status Pekerjaan
+          </label>
+          <div class="radio-group" id="radio-status">
+            <label class="radio-pill">
+              <input type="radio" name="job-status" value="PNS" data-field="job_status"/>
+              <span><i data-lucide="landmark"></i> PNS</span>
+            </label>
+            <label class="radio-pill">
+              <input type="radio" name="job-status" value="Swasta" data-field="job_status"/>
+              <span><i data-lucide="building"></i> Swasta</span>
+            </label>
+            <label class="radio-pill">
+              <input type="radio" name="job-status" value="Wirausaha" data-field="job_status"/>
+              <span><i data-lucide="store"></i> Wirausaha</span>
+            </label>
+            <label class="radio-pill">
+              <input type="radio" name="job-status" value="BUMN" data-field="job_status"/>
+              <span><i data-lucide="factory"></i> BUMN</span>
+            </label>
+            <label class="radio-pill">
+              <input type="radio" name="job-status" value="Lainnya" data-field="job_status"/>
+              <span><i data-lucide="more-horizontal"></i> Lainnya</span>
+            </label>
+          </div>
+        </div>
+
+        <div class="fields-grid col-2">
+
+          <div class="field-card">
+            <label class="field-label">
+              <i data-lucide="building-2"></i>
+              Nama Tempat Bekerja
+            </label>
+            <input type="text" id="field-workplace" placeholder="PT. Contoh Indonesia"
+              data-field="workplace_name"/>
+          </div>
+
+          <div class="field-card">
+            <label class="field-label">
+              <i data-lucide="award"></i>
+              Posisi / Jabatan
+            </label>
+            <input type="text" id="field-position" placeholder="Software Engineer"
+              data-field="position"/>
+          </div>
+
+          <div class="field-card field-card-wide">
+            <label class="field-label">
+              <i data-lucide="map-pin"></i>
+              Alamat Tempat Bekerja
+            </label>
+            <textarea id="field-work-address" placeholder="Jl. Contoh No.1, Jakarta Selatan, DKI Jakarta"
+              data-field="workplace_address" rows="3"></textarea>
+          </div>
+
+        </div>
+      </section>
+
+      <!-- ───────────────────────────────────────────
+           SECTION 4: SOSIAL MEDIA TEMPAT BEKERJA
+      ─────────────────────────────────────────── -->
+      <section class="dash-section">
+        <div class="section-header">
+          <div class="section-title">
+            <span class="section-dot"></span>
+            Sosial Media Tempat Bekerja
+          </div>
+          <span class="section-badge">Opsional</span>
+        </div>
+
+        <div class="fields-grid col-2">
+
+          <div class="field-card">
+            <label class="field-label">
+              <i data-lucide="linkedin"></i>
+              LinkedIn Perusahaan
+            </label>
+            <div class="field-wrap social-field-wrap">
+              <span class="social-prefix">linkedin.com/company/</span>
+              <input type="text" id="field-company-linkedin" class="social-input"
+                placeholder="nama-perusahaan" data-field="company_linkedin"/>
+            </div>
+          </div>
+
+          <div class="field-card">
+            <label class="field-label">
+              <i data-lucide="instagram"></i>
+              Instagram Perusahaan
+            </label>
+            <div class="field-wrap social-field-wrap">
+              <span class="social-prefix">@</span>
+              <input type="text" id="field-company-instagram" class="social-input"
+                placeholder="perusahaan_id" data-field="company_instagram"/>
+            </div>
+          </div>
+
+          <div class="field-card">
+            <label class="field-label">
+              <i data-lucide="facebook"></i>
+              Facebook Perusahaan
+            </label>
+            <div class="field-wrap social-field-wrap">
+              <span class="social-prefix">facebook.com/</span>
+              <input type="text" id="field-company-facebook" class="social-input"
+                placeholder="NamaPerusahaan" data-field="company_facebook"/>
+            </div>
+          </div>
+
+          <div class="field-card">
+            <label class="field-label">
+              <svg viewBox="0 0 24 24" fill="currentColor" width="14" height="14" style="flex-shrink:0">
+                <path d="M19.59 6.69a4.83 4.83 0 0 1-3.77-4.25V2h-3.45v13.67a2.89 2.89 0 0 1-2.88 2.5 2.89 2.89 0 0 1-2.89-2.89 2.89 2.89 0 0 1 2.89-2.89c.28 0 .54.04.79.1V9.01a6.33 6.33 0 0 0-.79-.05 6.34 6.34 0 0 0-6.34 6.34 6.34 6.34 0 0 0 6.34 6.34 6.34 6.34 0 0 0 6.34-6.34V8.69a8.26 8.26 0 0 0 4.83 1.55V6.8a4.85 4.85 0 0 1-1.07-.11z"/>
+              </svg>
+              TikTok Perusahaan
+            </label>
+            <div class="field-wrap social-field-wrap">
+              <span class="social-prefix">@</span>
+              <input type="text" id="field-company-tiktok" class="social-input"
+                placeholder="perusahaan.id" data-field="company_tiktok"/>
+            </div>
+          </div>
+
+        </div>
+      </section>
+
+      <!-- ACTION BUTTONS -->
+      <div class="action-row">
+        <button id="btn-save" class="btn-primary">
+          <i data-lucide="save"></i>
+          <span class="btn-text">Simpan Profil</span>
+          <span class="btn-loader" aria-hidden="true"></span>
+        </button>
+        <button id="btn-reset" class="btn-ghost">
+          <i data-lucide="rotate-ccw"></i>
+          Reset Perubahan
+        </button>
+        <span id="last-saved" class="last-saved-text"></span>
+      </div>
+
+    </main><!-- /dash-main -->
+  </div><!-- /page-dashboard -->
+
+
+  <!-- Config & App Scripts -->
+  <script src="assets/config.js"></script>
+  <script src="assets/supabase.js"></script>
+  <script src="assets/social-api.js"></script>
+  <script src="assets/app.js"></script>
+
+</body>
+</html>

@@ -140,7 +140,18 @@ function shakeInputs(inputs) {
    ENTER DASHBOARD
 ──────────────────────────────────────────────────────────── */
 async function enterDashboard(alumniData) {
-  State.alumni = alumniData;
+  State.alumni  = alumniData;
+  State.profile = {};
+  State.isDirty = false;
+
+  // Bersihkan form dulu sebelum isi data user baru
+  clearAllFormFields();
+
+  // Tutup semua preview panel
+  $$('.social-preview-panel').forEach(p => {
+    p.classList.remove('open');
+    p.innerHTML = '';
+  });
 
   // Update UI profil hero
   updateProfileHero(alumniData);
@@ -148,9 +159,21 @@ async function enterDashboard(alumniData) {
   // Load profil tersimpan (data yang bisa diedit)
   if (isSupabaseConfigured()) {
     const { data } = await dbGetProfile(alumniData.nim);
-    if (data) {
+    if (data && Object.keys(data).length > 0) {
       State.profile = data;
       populateForm(data);
+    }
+  } else {
+    // Mode demo: load dari localStorage per NIM
+    const saved = localStorage.getItem(`alumni_profile_${alumniData.nim}`);
+    if (saved) {
+      try {
+        const parsed = JSON.parse(saved);
+        State.profile = parsed;
+        populateForm(parsed);
+      } catch (e) {
+        // data rusak, abaikan
+      }
     }
   }
 
@@ -197,8 +220,19 @@ function populateForm(profile) {
 }
 
 /* ────────────────────────────────────────────────────────────
-   COLLECT FORM DATA
+   CLEAR ALL FORM FIELDS (reset semua input ke kosong)
 ──────────────────────────────────────────────────────────── */
+function clearAllFormFields() {
+  $$('[data-field]').forEach(el => {
+    if (el.type === 'radio') {
+      el.checked = false;
+    } else {
+      el.value = '';
+    }
+  });
+}
+
+
 function collectForm() {
   const data = {};
 
@@ -321,13 +355,33 @@ function handleLogout() {
     if (!confirm('Ada perubahan belum disimpan. Yakin keluar?')) return;
   }
 
+  // Reset state
   State.alumni  = null;
   State.profile = {};
   State.isDirty = false;
 
+  // Bersihkan form login
   $('input-nama').value = '';
   $('input-nim').value  = '';
 
+  // Bersihkan SEMUA field dashboard
+  clearAllFormFields();
+
+  // Tutup semua social preview
+  $$('.social-preview-panel').forEach(p => {
+    p.classList.remove('open');
+    p.innerHTML = '';
+  });
+
+  // Reset completion ring ke 0%
+  $('completion-pct').textContent = '0%';
+  $('ring-fill').style.strokeDashoffset = 207.3;
+
+  // Reset last saved text
+  const lastSavedEl = $('last-saved');
+  if (lastSavedEl) lastSavedEl.textContent = '';
+
+  hideSaveStatus();
   showPage('page-login');
 }
 
